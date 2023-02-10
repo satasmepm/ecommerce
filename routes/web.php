@@ -1,6 +1,8 @@
 <?php
 
+
 use App\Http\Controllers\backend\adminPageController;
+use App\Http\Controllers\backend\categoryController;
 use App\Http\Controllers\web\homePageController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,11 +27,11 @@ Route::get('/error', [adminPageController::class,'error'])->name('adminPanel.err
 Route::get('/test', [adminPageController::class,'test'])->name('adminPanel.test'); 
 
 
-Route::get('/addcategory', [adminPageController::class,'addcategory'])->name('adminPanel.category'); 
-Route::post('ajaxImageUpload', [adminPageController::class,'postcategory'])->name('ajaxImageUpload');
-Route::get('datarecieve', [adminPageController::class,'getData'])->name('admin.category.recieveData');
+Route::get('/addcategory', [categoryController::class,'addcategory'])->name('adminPanel.category'); 
+Route::post('ajaxImageUpload', [categoryController::class,'postcategory'])->name('ajaxImageUpload');
+Route::get('datarecieve', [categoryController::class,'getData'])->name('admin.category.recieveData');
 
-
+Route::get('admin/category/{id}/delete', [categoryController::class,'deletecategory'])->name('admin.category.delete');
  
 
 

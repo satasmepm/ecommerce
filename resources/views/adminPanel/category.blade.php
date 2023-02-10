@@ -553,7 +553,74 @@ for a better web.
 </footer>
 </div>
 </div>
+<div class="modal fade" id="edit_category_details" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Category Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      {{-- form start   --}}
+      <form id="update_category_form">
 
+        <input type="hidden" class="form-control clear_input" name="id"  id="update_id"  >
+
+        <div class="form-group">
+          <label >name </label>
+          <input type="text" class="form-control clear_input" name="name"  id="edit_name"  >
+          <span id="edit_name_error" class="text-danger clear_form_error"></span>
+        </div>
+
+        <div class="form-group">
+          <label >description</label>
+          <textarea class="form-control clear_input" name="description"   id="edit_description" rows="3"></textarea>
+          <span id="edit_description_error" class="text-danger clear_form_error"></span>
+        </div>
+
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group" id="dropify_image">
+              <label >Category image</label>
+              <input type="file" data-height="85" class="form-control input clear_input dropify" id="test_dropify"  name="category_image" id="category_image"   placeholder="Enter Category Name">
+              <span id="category_image_edit_error" class="text-danger clear_form_error"></span>
+            </div>
+          </div >
+            <div class="col-6">
+              <label >Current Image</label>
+              <div id="display_image_edit">
+              </div>
+
+            </div >
+
+        </div>
+
+        <div class="form-group">
+          <div class="row">
+            <div class="col-12"> <label class="mr-3">Status</label> </div>
+            <div class="col-12"> <input type="checkbox" class="mr-2"  name="cat_status" required    id="cat_status"  data-toggle="toggle" data-on="Active" data-off="Deactive" data-onstyle="success" data-offstyle="danger" data-width="200" data-height="30"> </div>
+          </div>
+        </div>
+      
+
+        {{-- <label >Image</label>
+        <div id="display_image">
+        </div> --}}
+       
+       </div>
+       <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" id="update_category_btn" class="btn btn-primary">Save changes</button>
+
+      </form>
+      {{-- form end   --}}
+
+        </div>
+      </div>
+    </div>
+  </div>
   </div>
 
   <!--   Core JS Files   -->
@@ -583,7 +650,10 @@ for a better web.
         }
     });
 
+    
+
     var table = $('#category_list').DataTable({
+    
       processing: true,
       serverSide: true,
       ajax: "{{ route('admin.category.recieveData') }}",
@@ -597,6 +667,78 @@ for a better web.
   });
   
 
+  $('body').on('click','.edit',function(){
+
+    var drEvent = $('#test_dropify').dropify();
+    drEvent = drEvent.data('dropify');
+    drEvent.resetPreview(); 
+    drEvent.clearElement(); //clear dropify image
+
+
+      $('.clear_input').val('');
+      $('.clear_form_error').html(''); //clear validation and input values(old)
+
+  var id = $(this).data('id');
+  // get ajax data start 
+  $.ajax({
+
+  url:'{{ url("admin/category",) }}' + '/'+ id + '/edit',
+  method:'GET',
+  success: function(response){
+
+    console.log(response);
+
+    $('#edit_category_details').modal('show');
+
+    // console.log(response);
+    $('#update_id').val(response.id);
+    $('#edit_name').val(response.cat_name);
+    $('#edit_description').val(response.cat_description);
+  
+    if(response.status == 0){
+
+    $('#cat_status').bootstrapToggle('off');
+    }
+    else{
+    $('#cat_status').bootstrapToggle('on');
+
+    }
+
+    var display_image =  document.getElementById('display_image_edit');
+    var img  = '';
+    img+='<img height="95px"  src="{{ asset('/uploaded_images/cat_images/')}}/' +response.cat_image+ '" alt="">';
+    display_image.innerHTML = img; 
+  },
+      error: function(error){  
+  }
+  });
+  // ajax code end
+  });
+
+  $('body').on('click','.delete',function(){
+    var id = $(this).data('id');
+
+    if(confirm("Are you sure you want to update record ? ")){
+
+      $.ajax({
+  
+      url:'{{ url("admin/category",) }}' + '/'+ id + '/delete',
+      method:'GET',
+      success: function(response){
+    console.log(response);
+      $('#category_list').DataTable().ajax.reload();
+        
+      },
+          error: function(error){
+      
+      }
+      });
+  
+      }
+  });
+    
+    
+ 
     //  creaye cat
     $('#create_category').click(function(){
 

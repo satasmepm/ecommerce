@@ -22869,7 +22869,12 @@ hr.horizontal.gray-light {
   padding-left: 50px;
 width: 100%;
 }
-
+table.dataTable thead th {
+  border-bottom: 0;
+}
+table.dataTable tfoot th {
+  border-top: 0;
+}
 
 .table th {
 
@@ -22887,6 +22892,7 @@ width: 100%;
   padding-left: 50px;
   white-space: nowrap;
 }
+
 
 .table.align-items-center td,
 .table.align-items-center th {
